@@ -1,0 +1,31 @@
+services:
+  backend:
+    build: .
+    container_name: unilink-backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - ./uploads:/app/uploads
+    environment:
+      - MONGO_URI=mongodb://admin:password@mongodb:27017/unilink?authSource=admin
+      - JWT_SECRET=supersecretkey
+      - NODE_ENV=development
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:latest
+    container_name: unilink-mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: unilink
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:

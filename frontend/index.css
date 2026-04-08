@@ -1,0 +1,30 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+@theme {
+  --color-background: #222831;
+  --color-primary: #eeeeee;
+  --color-secondary: #393e46;
+  --color-accent: #00adb5;
+  
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+}
+
+body {
+  @apply bg-background text-primary;
+  font-family: 'Outfit', sans-serif;
+  margin: 0;
+}
+
+.glass-card {
+  @apply bg-secondary/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/5;
+}
+
+::selection {
+  @apply bg-accent/20 text-accent;
+}
+
+input:focus, textarea:focus {
+  @apply ring-2 ring-accent/50 border-transparent outline-none;
+}
