@@ -16,6 +16,8 @@ logs/
 # Environment files
 .env
 .env.*
+!.env.example
+!**/.env.example
 
 # Uploads and generated assets
 /backend/uploads/
