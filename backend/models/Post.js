@@ -42,7 +42,12 @@ const postSchema = mongoose.Schema(
                     default: Date.now
                 }
             }
-        ]
+        ],
+        group: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Group',
+            default: null
+        }
     },
     {
         timestamps: true,
