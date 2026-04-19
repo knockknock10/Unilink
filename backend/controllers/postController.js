@@ -201,7 +201,6 @@ const getUserPosts = asyncHandler(async (req, res) => {
 
 export {
     createPost,
-    createPost,
     getPosts,
     getPostById,
     updatePost,
