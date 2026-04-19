@@ -11,10 +11,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "#222831",
-        primary: "#eeeeee",
-        secondary: "#393e46",
-        accent: "#00adb5",
+        // UniLink brand palette
+        background: "#E87F24", // orange
+        secondary: "#D96F17", // darker orange for navbar/sections
+        primary: "#FEFDDF", // light cream text on orange
+        accent: "#73A5CA", // blue
+        button: "#FFC81E", // yellow
+        surface: "#FEFDDF", // light card/input surface
+        ink: "#111827", // readable dark text on surface
       },
       borderRadius: {
         'xl': '1rem',
