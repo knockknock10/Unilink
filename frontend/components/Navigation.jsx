@@ -1,32 +1,36 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Users, MessageSquare, PlusCircle, User } from 'lucide-react';
+import { LayoutDashboard, MessageSquare, PlusCircle, User, Compass } from 'lucide-react';
 
 const Navigation = () => {
   const menuItems = [
     { label: 'Feed', path: '/', Icon: LayoutDashboard },
-    { label: 'Groups', path: '/groups', Icon: Users },
+    { label: 'Explore', path: '/groups', Icon: Compass },
     { label: 'Create', path: '/create', Icon: PlusCircle },
     { label: 'Messages', path: '/messages', Icon: MessageSquare },
     { label: 'Profile', path: '/profile', Icon: User },
   ];
 
   return (
-    <nav className="flex flex-col gap-2">
+    <nav className="flex flex-col gap-3 py-4">
       {menuItems.map(({ label, path, Icon }) => (
         <NavLink
           key={path}
           to={path}
           className={({ isActive }) => `
-            flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 font-bold text-[15px] tracking-wide
+            flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300 font-black text-[14px] uppercase tracking-widest
             ${isActive 
-              ? 'bg-primary text-white shadow-xl shadow-primary/20 scale-105' 
-              : 'text-primary/70 hover:bg-white/60 hover:text-primary hover:scale-105'
+              ? 'bg-primary text-white shadow-2xl shadow-primary/30 scale-105' 
+              : 'text-primary/60 hover:bg-white hover:text-primary hover:shadow-md active:scale-95'
             }
           `}
         >
-          <Icon size={22} strokeWidth={2.5} />
-          <span className="hidden lg:block">{label}</span>
+          {({ isActive }) => (
+            <>
+              <Icon size={24} strokeWidth={isActive ? 3 : 2.5} className="shrink-0" />
+              <span className="hidden lg:block whitespace-nowrap">{label}</span>
+            </>
+          )}
         </NavLink>
       ))}
     </nav>

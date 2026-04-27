@@ -11,14 +11,16 @@ export default {
   theme: {
     extend: {
       colors: {
-        // UniLink brand palette
-        background: "#E87F24", // orange
-        secondary: "#D96F17", // darker orange for navbar/sections
-        primary: "#FEFDDF", // light cream text on orange
-        accent: "#73A5CA", // blue
-        button: "#FFC81E", // yellow
-        surface: "#FEFDDF", // light card/input surface
-        ink: "#111827", // readable dark text on surface
+        // UniLink Premium Orange Palette
+        primary: "#E87F24",      // Vibrant Orange
+        accent: "#FFC81E",       // Sunny Yellow
+        background: "#FEF6EE",   // Soft Cream
+        surface: "#FFFFFF",      // Clean White
+        ink: "#2D2D2D",          // Deep Graphite
+        muted: "#6B7280",        // Steel Gray
+        border: "#F1E4D7",       // Sand Border
+        button: "#E87F24",       // Primary Action
+        secondary: "#FFC81E",    // Secondary Action
       },
       borderRadius: {
         'xl': '1rem',

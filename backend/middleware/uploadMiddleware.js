@@ -66,4 +66,23 @@ const upload = multer({
     }
 });
 
-export { upload };
+/**
+ * Wraps upload.fields() and catches multer errors cleanly.
+ */
+const handlePostUpload = (req, res, next) => {
+    upload.fields([
+        { name: 'image', maxCount: 1 },
+        { name: 'video', maxCount: 1 },
+        { name: 'document', maxCount: 1 },
+    ])(req, res, (err) => {
+        if (err instanceof multer.MulterError) {
+            return res.status(400).json({ message: `Upload error: ${err.message}` });
+        } else if (err) {
+            return res.status(400).json({ message: err.message });
+        }
+        console.log('[multer] req.files:', req.files || 'NO FILES RECEIVED');
+        next();
+    });
+};
+
+export { upload, handlePostUpload };

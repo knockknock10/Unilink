@@ -8,21 +8,22 @@ import {
   toggleLikePost,
   getMyPosts,
   addComment,
+  getUserPosts,
+  getTrendingHashtags,
 } from '../controllers/postController.js';
 import { protect } from '../middleware/authMiddleware.js';
-import { upload } from '../middleware/uploadMiddleware.js';
+import { handlePostUpload } from '../middleware/uploadMiddleware.js';
 
 const router = express.Router();
 
 router.route('/')
-  .post(protect, upload.fields([
-    { name: 'image', maxCount: 1 },
-    { name: 'video', maxCount: 1 },
-    { name: 'document', maxCount: 1 }
-  ]), createPost)
+  .post(protect, handlePostUpload, createPost)
   .get(getPosts);
 
+// Must be before /:id routes to avoid conflict
+router.get('/trending', getTrendingHashtags);
 router.get('/my/all', protect, getMyPosts);
+router.get('/user/:id', getUserPosts);
 
 router.route('/:id')
   .get(getPostById)

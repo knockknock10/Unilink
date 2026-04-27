@@ -1,23 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
-import { motion } from 'framer-motion';
-import { Mail, Lock, User, UserPlus } from 'lucide-react';
+import { Mail, Lock, User, UserPlus, ArrowRight, ShieldCheck, Eye, EyeOff } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Register = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { register } = useAuth();
+  const { register, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name || !email || !password || !confirmPassword) {
-      toast.error('All fields are required');
+    if (!name.trim() || !email.trim() || !password || !confirmPassword) {
+      toast.error('Please fill in all fields');
       return;
     }
 
@@ -27,121 +35,198 @@ const Register = () => {
     }
 
     if (password.length < 6) {
-        toast.error('Password must be at least 6 characters');
-        return;
+      toast.error('Password must be at least 6 characters');
+      return;
     }
 
     setIsSubmitting(true);
     try {
       const result = await register(name, email, password);
       if (result.success) {
-        toast.success('Welcome to the UniLink family! 🎉');
-        navigate('/');
+        toast.success(`Account created successfully! Please log in. 🎉`);
+        navigate('/login');
       } else {
         toast.error(result.message);
       }
-    } catch (error) {
-      toast.error('An unexpected error occurred');
+    } catch {
+      toast.error('Connection error. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut", staggerChildren: 0.1 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, x: -10 },
+    visible: { opacity: 1, x: 0 }
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-6">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-lg"
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-background px-4 py-12">
+      {/* Decorative background elements */}
+      <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-5%] w-[40%] h-[40%] rounded-full bg-button blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-5%] w-[40%] h-[40%] rounded-full bg-accent blur-[120px]" />
+      </div>
+
+      <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="w-full max-w-xl z-10"
       >
-        <div className="glass-card shadow-2xl overflow-hidden">
-          <div className="p-10 flex flex-col items-center">
-            <div className="w-16 h-16 bg-accent/20 rounded-2xl flex items-center justify-center mb-6 text-accent">
-                <UserPlus size={32} />
-            </div>
-            <h1 className="text-3xl font-black text-primary tracking-tight">Join UniLink</h1>
-            <p className="text-primary/70 mt-2 font-medium">Create your university student networking profile</p>
+        <div className="glass-card overflow-hidden backdrop-blur-xl border-white/20">
+          <div className="p-8 md:p-12 text-center relative overflow-hidden">
+             {/* Header Section */}
+            <motion.div variants={itemVariants} className="relative z-10">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-button rounded-3xl rotate-3 mb-6 shadow-xl shadow-button/30">
+                <UserPlus size={40} className="text-ink -rotate-3" />
+              </div>
+              <h1 className="text-4xl md:text-5xl font-black text-ink tracking-tight mb-3">
+                Create Account
+              </h1>
+              <p className="text-ink/60 text-lg font-medium max-w-sm mx-auto">
+                Join the largest student network and start connecting today.
+              </p>
+            </motion.div>
           </div>
 
-          <form onSubmit={handleSubmit} className="px-10 pb-10 space-y-6">
-            <div className="grid grid-cols-1 gap-4">
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest px-1">Full Name</label>
+          <form onSubmit={handleSubmit} className="px-8 md:px-12 pb-10 space-y-6">
+            <div className="space-y-5">
+              {/* Full Name Input */}
+              <motion.div variants={itemVariants} className="space-y-2">
+                <label className="text-sm font-bold text-ink/80 flex items-center gap-2 ml-1">
+                  <User size={16} className="text-accent" />
+                  Full Name
+                </label>
                 <div className="relative group">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300 group-focus-within:text-accent transition-colors" size={20} />
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="John Doe"
-                    className="w-full pl-12 pr-4 py-4 bg-secondary/40 border border-white/5 rounded-2xl transition-all focus:bg-secondary"
+                    placeholder="Enter your full name"
+                    className="input-field py-4 px-5 text-base hover:border-accent/50 focus:border-accent transition-all duration-300"
+                    required
                   />
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest px-1">University Email</label>
+              {/* Email Input */}
+              <motion.div variants={itemVariants} className="space-y-2">
+                <label className="text-sm font-bold text-ink/80 flex items-center gap-2 ml-1">
+                  <Mail size={16} className="text-accent" />
+                  University Email
+                </label>
                 <div className="relative group">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300 group-focus-within:text-accent transition-colors" size={20} />
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="john@university.edu"
-                    className="w-full pl-12 pr-4 py-4 bg-secondary/40 border border-white/5 rounded-2xl transition-all focus:bg-secondary"
+                    placeholder="name@university.edu"
+                    className="input-field py-4 px-5 text-base hover:border-accent/50 focus:border-accent transition-all duration-300"
+                    required
                   />
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest px-1">Password</label>
+              {/* Password Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <motion.div variants={itemVariants} className="space-y-2">
+                  <label className="text-sm font-bold text-ink/80 flex items-center gap-2 ml-1">
+                    <Lock size={16} className="text-accent" />
+                    Password
+                  </label>
                   <div className="relative group">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300 group-focus-within:text-accent transition-colors" size={20} />
                     <input
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-12 pr-4 py-4 bg-secondary/40 border border-white/5 rounded-2xl transition-all focus:bg-secondary"
+                      className="input-field py-4 px-5 pr-12 text-base hover:border-accent/50 focus:border-accent transition-all duration-300"
+                      required
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-ink/40 hover:text-accent transition-colors"
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
                   </div>
-                </div>
+                </motion.div>
 
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest px-1">Confirm</label>
+                <motion.div variants={itemVariants} className="space-y-2">
+                  <label className="text-sm font-bold text-ink/80 flex items-center gap-2 ml-1">
+                    <ShieldCheck size={16} className="text-accent" />
+                    Confirm
+                  </label>
                   <div className="relative group">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300 group-focus-within:text-accent transition-colors" size={20} />
                     <input
-                      type="password"
+                      type={showConfirmPassword ? "text" : "password"}
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-12 pr-4 py-4 bg-secondary/40 border border-white/5 rounded-2xl transition-all focus:bg-secondary"
+                      className="input-field py-4 px-5 pr-12 text-base hover:border-accent/50 focus:border-accent transition-all duration-300"
+                      required
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-ink/40 hover:text-accent transition-colors"
+                    >
+                      {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
                   </div>
-                </div>
+                </motion.div>
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-accent text-primary py-4 rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-accent/20 hover:bg-accent/90 hover:scale-[1.02] transition-all"
-            >
-              <UserPlus size={20} />
-              {isSubmitting ? 'Registering...' : 'Create Account'}
-            </button>
+            {/* Submit Button */}
+            <motion.div variants={itemVariants} className="pt-4">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="btn-primary w-full py-4 text-lg flex items-center justify-center gap-3 shadow-2xl shadow-button/40 hover:translate-y-[-2px] active:translate-y-0 transition-all disabled:opacity-70 group"
+              >
+                {isSubmitting ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 border-2 border-ink/30 border-t-ink rounded-full animate-spin" />
+                    <span>Creating account...</span>
+                  </div>
+                ) : (
+                  <>
+                    <span>Start Your Journey</span>
+                    <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                  </>
+                )}
+              </button>
+            </motion.div>
 
-            <p className="text-center text-primary/70 text-sm font-medium">
-              Already a member?{' '}
-              <Link to="/login" className="text-accent hover:underline font-bold transition-all">
-                Login here
+            {/* Footer */}
+            <motion.p variants={itemVariants} className="text-center text-ink/60 font-medium pt-2">
+              Already have an account?{' '}
+              <Link to="/login" className="text-ink font-extrabold hover:text-accent transition-colors underline underline-offset-4 decoration-accent/30 decoration-2">
+                Log In
               </Link>
-            </p>
+            </motion.p>
           </form>
         </div>
+
+        {/* Brand slogan */}
+        <motion.div 
+          variants={itemVariants}
+          className="text-center mt-12 text-primary font-medium tracking-wide opacity-80"
+        >
+          Built by students, for students.
+        </motion.div>
       </motion.div>
     </div>
   );
