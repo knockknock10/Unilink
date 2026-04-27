@@ -7,6 +7,8 @@ services:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
       MONGO_INITDB_DATABASE: unilink
+    ports:
+      - "27017:27017"
     volumes:
       - unilink-mongo-data:/data/db
     networks:
@@ -28,7 +30,9 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - ./backend/uploads:/app/uploads
+      - ./backend:/app
+      - /app/node_modules
+    command: npx nodemon server.js
     depends_on:
       unilink-mongo:
         condition: service_healthy

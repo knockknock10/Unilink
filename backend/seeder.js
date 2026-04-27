@@ -20,29 +20,37 @@ const seedData = async () => {
 
         // Users
         const usersData = [
-            { name: 'Rahul Sharma', email: 'rahul@example.com', password: 'password123', bio: 'B.Tech CS Student | Coding enthusiast', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Rahul' },
-            { name: 'Priya Verma', email: 'priya@example.com', password: 'password123', bio: 'Electronics Engineer | Love photography', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Priya' },
-            { name: 'Ankit Patel', email: 'ankit@example.com', password: 'password123', bio: 'Mechanical Student | Formula Student', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Ankit' },
-            { name: 'Sneha Reddy', email: 'sneha@example.com', password: 'password123', bio: 'Biotech student | Researcher', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sneha' },
-            { name: 'Arjun Singh', email: 'arjun@example.com', password: 'password123', bio: 'MBA candidate | Strategic thinker', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Arjun' },
-            { name: 'Neha Gupta', email: 'neha@example.com', password: 'password123', bio: 'Design student | Creative soul', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Neha' },
-            { name: 'Rohit Kumar', email: 'rohit@example.com', password: 'password123', bio: 'Civil Engineering | Building the future', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Rohit' },
-            { name: 'Kavya Nair', email: 'kavya@example.com', password: 'password123', bio: 'Literature student | Aspiring writer', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Kavya' },
-            { name: 'Aditya Joshi', email: 'aditya@example.com', password: 'password123', bio: 'Physics major | Space enthusiast', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Aditya' },
-            { name: 'Pooja Mehta', email: 'pooja@example.com', password: 'password123', bio: 'Marketing student | Trend watcher', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Pooja' },
+            { name: 'Aarav Patel', email: 'aarav@example.com', password: 'password123', department: 'Computer Science', year: '3rd Year', profilePic: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Aarav' },
+            { name: 'Vivaan Sharma', email: 'vivaan@example.com', password: 'password123', department: 'Electronics', year: '2nd Year', profilePic: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Vivaan' },
+            { name: 'Aditya Singh', email: 'aditya@example.com', password: 'password123', department: 'Information Technology', year: '4th Year', profilePic: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Aditya' },
+            { name: 'Vihaan Gupta', email: 'vihaan@example.com', password: 'password123', department: 'Mechanical', year: '3rd Year', profilePic: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Vihaan' },
+            { name: 'Arjun Kumar', email: 'arjun@example.com', password: 'password123', department: 'Computer Science', year: '1st Year', profilePic: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Arjun' },
+            { name: 'Sai Krishna', email: 'sai@example.com', password: 'password123', department: 'Civil', year: '2nd Year', profilePic: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sai' },
+            { name: 'Ayaan Desai', email: 'ayaan@example.com', password: 'password123', department: 'Computer Science', year: '4th Year', profilePic: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Ayaan' },
+            { name: 'Krishna Reddy', email: 'krishna@example.com', password: 'password123', department: 'Information Technology', year: '3rd Year', profilePic: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Krishna' },
+            { name: 'Ishaan Joshi', email: 'ishaan@example.com', password: 'password123', department: 'Electronics', year: '1st Year', profilePic: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Ishaan' },
+            { name: 'Shaurya Mehta', email: 'shaurya@example.com', password: 'password123', department: 'Mechanical', year: '4th Year', profilePic: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Shaurya' },
+            { name: 'Ananya Iyer', email: 'ananya@example.com', password: 'password123', department: 'Computer Science', year: '2nd Year', profilePic: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Ananya' },
+            { name: 'Diya Bhatia', email: 'diya@example.com', password: 'password123', department: 'Civil', year: '3rd Year', profilePic: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Diya' },
+            { name: 'Myra Nair', email: 'myra@example.com', password: 'password123', department: 'Information Technology', year: '2nd Year', profilePic: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Myra' },
+            { name: 'Riya Menon', email: 'riya@example.com', password: 'password123', department: 'Electronics', year: '3rd Year', profilePic: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Riya' },
+            { name: 'Sneha Dubey', email: 'sneha@example.com', password: 'password123', department: 'Computer Science', year: '4th Year', profilePic: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sneha' }
         ];
 
-        // We don't hash here manually as pre-save hook in User model takes care of it,
-        // but wait, User.model.create or seed often needs it if we use insertMany.
-        // Actually User.js has a pre-save hook so it should be fine.
+        // Hash passwords before creating users
+        const hashedUsersData = await Promise.all(usersData.map(async (user) => {
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(user.password, salt);
+            return { ...user, password: hashedPassword };
+        }));
 
-        const createdUsers = await User.create(usersData);
+        const createdUsers = await User.create(hashedUsersData);
 
         // Create Profiles
         const profilesData = createdUsers.map(user => ({
             user: user._id,
-            department: 'Computer Science',
-            year: '3rd Year',
+            department: user.department,
+            year: user.year,
             skills: ['React', 'Node.js', 'MongoDB'],
             interests: ['Web Development', 'AI']
         }));

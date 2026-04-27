@@ -9,7 +9,7 @@ const buildAuthResponse = (user, token) => ({
     name: user.name,
     email: user.email,
     bio: user.bio,
-    avatar: user.avatar,
+    profilePic: user.profilePic,
     bannerImage: user.bannerImage,
     department: user.department,
     year: user.year,
@@ -22,53 +22,82 @@ const buildAuthResponse = (user, token) => ({
     token,
 });
 
+import bcrypt from 'bcryptjs';
+
 // @desc    Register new user
 // @route   POST /api/auth/register
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-    try {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
+    const { name, email, password } = req.body;
 
-        const { name, email, password } = req.body;
-
-        const userExists = await User.findOne({ email });
-
-        if (userExists) {
-            return res.status(400).json({ message: 'User already exists' });
-        }
-
-        const user = await User.create({ name, email, password });
-
-        if (user) {
-            return res.status(201).json(buildAuthResponse(user, generateToken(user._id)));
-        } else {
-            return res.status(400).json({ message: 'Invalid user data' });
-        }
-    } catch (error) {
-        return res.status(400).json({ message: error.message });
+    // Validate input
+    if (!name || !email || !password) {
+        return res.status(400).json({ message: "Name, email, and password are required" });
     }
+
+    // Check existing user
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+        return res.status(400).json({ message: "User already exists" });
+    }
+
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Save user
+    const user = new User({
+        name,
+        email,
+        password: hashedPassword
+    });
+    await user.save();
+
+    // Return response
+    res.status(201).json({ message: "User registered successfully" });
 });
+
+import jwt from 'jsonwebtoken';
 
 // @desc    Auth user & get token
 // @route   POST /api/auth/login
 // @access  Public
 const loginUser = asyncHandler(async (req, res) => {
-    try {
-        const { email, password } = req.body;
+    const { email, password } = req.body;
 
-        const user = await User.findOne({ email });
-
-        if (user && (await user.matchPassword(password))) {
-            return res.json(buildAuthResponse(user, generateToken(user._id)));
-        } else {
-            return res.status(401).json({ message: 'Invalid email or password' });
-        }
-    } catch (error) {
-        return res.status(400).json({ message: error.message });
+    // Validate input
+    if (!email || !password) {
+        return res.status(400).json({ message: "Email and password are required" });
     }
+
+    // Find user
+    const user = await User.findOne({ email });
+    if (!user) {
+        return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    // Compare password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+        return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    // Generate JWT
+    const token = jwt.sign(
+        { id: user._id },
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" }
+    );
+
+    // Return response
+    res.status(200).json({
+        token,
+        user: {
+            id: user._id,
+            name: user.name,
+            email: user.email
+        }
+    });
 });
 
 export { registerUser, loginUser };

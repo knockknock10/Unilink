@@ -20,13 +20,29 @@ const userSchema = mongoose.Schema(
             type: String,
             default: '',
         },
-        profilePicture: {
+        profilePic: {
             type: String,
             default: '',
         },
-        avatar: {
+        bannerImage: {
             type: String,
             default: '',
+        },
+        department: {
+            type: String,
+            default: '',
+        },
+        year: {
+            type: String,
+            default: '',
+        },
+        skills: {
+            type: [String],
+            default: [],
+        },
+        interests: {
+            type: [String],
+            default: [],
         },
         followers: [{
             type: mongoose.Schema.Types.ObjectId,
@@ -35,29 +51,39 @@ const userSchema = mongoose.Schema(
         following: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
-        }]
+        }],
+        role: {
+            type: String,
+            enum: ['student', 'admin'],
+            default: 'student',
+        },
     },
     {
         timestamps: true,
     }
 );
 
-// Match user entered password to hashed password in database
-userSchema.methods.matchPassword = async function (enteredPassword) {
-    if (!this.password || !enteredPassword) return false;
-    return await bcrypt.compare(enteredPassword, this.password);
-};
-
-// Encrypt password using bcrypt before saving
-// Mongoose 9: async pre hooks do NOT receive `next` — just return or throw
+// Pre-save hook to hash password
 userSchema.pre('save', async function () {
     if (!this.isModified('password')) {
+        return;
+    }
+    
+    // If password already looks like a bcrypt hash (starts with $2a$ or $2b$), don't hash again
+    if (this.password && (this.password.startsWith('$2a$') || this.password.startsWith('$2b$'))) {
         return;
     }
 
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
 });
+
+// matchPassword and other methods remain here if needed
+userSchema.methods.matchPassword = async function (enteredPassword) {
+    if (!this.password || !enteredPassword) return false;
+    return await bcrypt.compare(enteredPassword, this.password);
+};
+
 
 const User = mongoose.model('User', userSchema);
 

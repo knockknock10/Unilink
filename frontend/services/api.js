@@ -1,10 +1,9 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api', // Local development base URL
-  headers: {
-    'Content-Type': 'application/json'
-  }
+  baseURL: (import.meta.env.VITE_API_URL || '') + '/api', // Dynamic base URL
+  // Note: Do NOT set a default Content-Type here.
+  // axios auto-detects FormData and sets 'multipart/form-data' with the correct boundary.
 });
 
 // Interceptor to add authorization token

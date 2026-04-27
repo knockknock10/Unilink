@@ -1,30 +1,158 @@
-@import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+/* ── Google Font (must be first, before @import "tailwindcss") ──────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap');
 
+@import "tailwindcss";
+
+/* ── Tailwind v4: Custom Design Tokens ─────────────────────────────────────── */
 @theme {
-  --color-background: #222831;
-  --color-primary: #eeeeee;
-  --color-secondary: #393e46;
-  --color-accent: #00adb5;
-  
+  /* UniLink Orange Premium Palette */
+  --color-primary: #E87F24;      /* primary orange */
+  --color-accent: #FFC81E;       /* yellow accent */
+  --color-background: #FEF6EE;   /* cream background */
+  --color-surface: #FFFFFF;      /* card/input bg */
+  --color-ink: #2D2D2D;          /* dark text */
+  --color-muted: #6B7280;        /* light text */
+  --color-border: #F1E4D7;       /* border */
+  --color-button: #E87F24;       /* alias for primary */
+  --color-secondary: #FFC81E;    /* alias for accent */
+
+  /* Border radius */
   --radius-xl: 1rem;
   --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
+
+  /* Font */
+  --font-family-sans: 'Outfit', sans-serif;
 }
 
-body {
-  @apply bg-background text-primary;
-  font-family: 'Outfit', sans-serif;
-  margin: 0;
+/* ── Base ───────────────────────────────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-ink);
+    font-family: var(--font-family-sans);
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    background-image: 
+      radial-gradient(circle at 0% 0%, rgba(232, 127, 36, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 100% 100%, rgba(255, 200, 30, 0.05) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+
+  /* ── Selection ──────────────────────────────────────────────────────────────── */
+  ::selection {
+    background-color: var(--color-button);
+    color: white;
+  }
+
+  /* Browser autofill override */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px var(--color-surface) inset !important;
+    -webkit-text-fill-color: var(--color-ink) !important;
+    caret-color: var(--color-ink);
+  }
 }
 
-.glass-card {
-  @apply bg-secondary/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/5;
+@layer utilities {
+  /* ── Scrollbar hide ─────────────────────────────────────────────────────────── */
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  
+  .glass-effect {
+    backdrop-filter: blur(12px);
+    background-color: rgba(255, 255, 255, 0.85);
+  }
 }
 
-::selection {
-  @apply bg-accent/20 text-accent;
+@layer components {
+  /* ── Glass card ─────────────────────────────────────────────────────────────── */
+  .glass-card {
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    color: var(--color-ink);
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 30px rgba(232, 127, 36, 0.08);
+    border: 1px solid var(--color-border);
+  }
+
+  /* ── Input field ────────────────────────────────────────────────────────────── */
+  .input-field {
+    width: 100%;
+    background-color: #FFFFFF;
+    color: var(--color-ink);
+    border: 1.5px solid var(--color-border);
+    border-radius: 1rem;
+    padding: 0.75rem 1rem;
+    font-family: var(--font-family-sans);
+    font-size: 1rem;
+    font-weight: 500;
+    outline: none;
+    transition: all 0.2s;
+  }
+
+  .input-field::placeholder {
+    color: var(--color-muted);
+  }
+
+  .input-field:focus {
+    border-color: var(--color-button);
+    background-color: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(232, 127, 36, 0.15);
+  }
+
+  /* ── Buttons ────────────────────────────────────────────────────────────────── */
+  .btn-primary {
+    background-color: var(--color-button);
+    color: white;
+    font-family: var(--font-family-sans);
+    font-weight: 700;
+    border-radius: 1rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 4px 14px 0 rgba(232, 127, 36, 0.3);
+  }
+
+  .btn-primary:hover { 
+    background-color: #D6721C;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(232, 127, 36, 0.2);
+  }
+
+  .btn-primary:active { transform: translateY(0); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--color-button);
+    font-family: var(--font-family-sans);
+    font-weight: 700;
+    border-radius: 1rem;
+    padding: 0.75rem 1.5rem;
+    border: 2px solid var(--color-button);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover {
+    background-color: rgba(232, 127, 36, 0.05);
+  }
+
+  .btn-secondary:active { transform: scale(0.97); }
+
+  /* ── Animations ─────────────────────────────────────────────────────────────── */
+  .animate-in { animation: fadeSlideIn 0.3s ease-out both; }
 }
 
-input:focus, textarea:focus {
-  @apply ring-2 ring-accent/50 border-transparent outline-none;
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
