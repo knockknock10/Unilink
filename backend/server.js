@@ -25,7 +25,6 @@ import seedData from './seed.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 import path from 'path';
-import fs from 'fs';
 
 // Connect to MongoDB Atlas
 connectDB();
