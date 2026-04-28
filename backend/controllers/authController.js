@@ -2,6 +2,8 @@ import asyncHandler from 'express-async-handler';
 import User from '../models/User.js';
 import generateToken from '../utils/generateToken.js';
 import { validationResult } from 'express-validator';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 // Helper to build a consistent auth response
 const buildAuthResponse = (user, token) => ({
@@ -21,8 +23,6 @@ const buildAuthResponse = (user, token) => ({
     createdAt: user.createdAt,
     token,
 });
-
-import bcrypt from 'bcryptjs';
 
 // @desc    Register new user
 // @route   POST /api/auth/register
@@ -57,8 +57,6 @@ const registerUser = asyncHandler(async (req, res) => {
     res.status(201).json({ message: "User registered successfully" });
 });
 
-import jwt from 'jsonwebtoken';
-
 // @desc    Auth user & get token
 // @route   POST /api/auth/login
 // @access  Public
@@ -89,14 +87,10 @@ const loginUser = asyncHandler(async (req, res) => {
         { expiresIn: "7d" }
     );
 
-    // Return response
+    // Return response using the helper to include role and profile data
     res.status(200).json({
         token,
-        user: {
-            id: user._id,
-            name: user.name,
-            email: user.email
-        }
+        user: buildAuthResponse(user, token)
     });
 });
 
