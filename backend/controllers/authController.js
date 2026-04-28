@@ -89,14 +89,10 @@ const loginUser = asyncHandler(async (req, res) => {
         { expiresIn: "7d" }
     );
 
-    // Return response
+    // Return response using the helper to include role and profile data
     res.status(200).json({
         token,
-        user: {
-            id: user._id,
-            name: user.name,
-            email: user.email
-        }
+        user: buildAuthResponse(user, token)
     });
 });
 
