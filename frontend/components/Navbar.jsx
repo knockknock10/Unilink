@@ -15,7 +15,7 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 w-full bg-surface/95 backdrop-blur-xl border-b border-primary/10 z-[100] transition-all duration-500">
       <div className="w-full max-w-[1536px] mx-auto px-6 sm:px-12 lg:px-20">
         <div className="flex items-center justify-between h-20">
-          {/* Left — Logo */}
+
           <div className="flex items-center gap-4 min-w-[180px]">
             <Link to="/" className="flex items-center gap-3 group">
               <div className="w-11 h-11 bg-primary rounded-2xl flex items-center justify-center shadow-xl shadow-primary/20 group-hover:rotate-12 transition-transform duration-500">
@@ -27,14 +27,14 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Center — Search Bar */}
+
           <div className="flex-1 flex justify-center px-4 md:px-8 mx-auto max-w-3xl">
             <div className="w-full">
               <SearchBar />
             </div>
           </div>
 
-          {/* Right — Profile + Logout */}
+
           <div className="flex items-center justify-end gap-4 min-w-[180px]">
             {isAuthenticated ? (
               <div className="flex items-center gap-4">
@@ -59,7 +59,7 @@ const Navbar = () => {
                     />
                   </div>
                 </Link>
-                {/* Logout Button */}
+
                 <button
                   onClick={handleLogout}
                   title="Logout"

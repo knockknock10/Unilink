@@ -71,7 +71,7 @@ const Register = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-background px-4 py-12">
-      {/* Decorative background elements */}
+
       <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
         <div className="absolute top-[-10%] left-[-5%] w-[40%] h-[40%] rounded-full bg-button blur-[120px]" />
         <div className="absolute bottom-[-10%] right-[-5%] w-[40%] h-[40%] rounded-full bg-accent blur-[120px]" />
@@ -85,7 +85,7 @@ const Register = () => {
       >
         <div className="glass-card overflow-hidden backdrop-blur-xl border-white/20">
           <div className="p-8 md:p-12 text-center relative overflow-hidden">
-             {/* Header Section */}
+
             <motion.div variants={itemVariants} className="relative z-10">
               <div className="inline-flex items-center justify-center w-20 h-20 bg-button rounded-3xl rotate-3 mb-6 shadow-xl shadow-button/30">
                 <UserPlus size={40} className="text-ink -rotate-3" />
@@ -101,7 +101,7 @@ const Register = () => {
 
           <form onSubmit={handleSubmit} className="px-8 md:px-12 pb-10 space-y-6">
             <div className="space-y-5">
-              {/* Full Name Input */}
+
               <motion.div variants={itemVariants} className="space-y-2">
                 <label className="text-sm font-bold text-ink/80 flex items-center gap-2 ml-1">
                   <User size={16} className="text-accent" />
@@ -119,7 +119,7 @@ const Register = () => {
                 </div>
               </motion.div>
 
-              {/* Email Input */}
+
               <motion.div variants={itemVariants} className="space-y-2">
                 <label className="text-sm font-bold text-ink/80 flex items-center gap-2 ml-1">
                   <Mail size={16} className="text-accent" />
@@ -137,7 +137,7 @@ const Register = () => {
                 </div>
               </motion.div>
 
-              {/* Password Grid */}
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <motion.div variants={itemVariants} className="space-y-2">
                   <label className="text-sm font-bold text-ink/80 flex items-center gap-2 ml-1">
@@ -189,7 +189,7 @@ const Register = () => {
               </div>
             </div>
 
-            {/* Submit Button */}
+
             <motion.div variants={itemVariants} className="pt-4">
               <button
                 type="submit"
@@ -210,7 +210,7 @@ const Register = () => {
               </button>
             </motion.div>
 
-            {/* Footer */}
+
             <motion.p variants={itemVariants} className="text-center text-ink/60 font-medium pt-2">
               Already have an account?{' '}
               <Link to="/login" className="text-ink font-extrabold hover:text-accent transition-colors underline underline-offset-4 decoration-accent/30 decoration-2">
@@ -220,7 +220,7 @@ const Register = () => {
           </form>
         </div>
 
-        {/* Brand slogan */}
+
         <motion.div 
           variants={itemVariants}
           className="text-center mt-12 text-primary font-medium tracking-wide opacity-80"
