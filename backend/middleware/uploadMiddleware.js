@@ -2,13 +2,20 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 
-// Ensure upload directories exist
-const uploadDirs = ['uploads/images', 'uploads/videos', 'uploads/docs'];
-uploadDirs.forEach(dir => {
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
-    }
-});
+// Ensure upload directories exist (only in local development)
+const isProduction = process.env.NODE_ENV === 'production' || process.env.NETLIFY;
+if (!isProduction) {
+    const uploadDirs = ['uploads/images', 'uploads/videos', 'uploads/docs'];
+    uploadDirs.forEach(dir => {
+        try {
+            if (!fs.existsSync(dir)) {
+                fs.mkdirSync(dir, { recursive: true });
+            }
+        } catch (err) {
+            console.warn(`Could not create directory ${dir}:`, err.message);
+        }
+    });
+}
 
 // Configure Storage
 const storage = multer.diskStorage({
@@ -66,9 +73,6 @@ const upload = multer({
     }
 });
 
-/**
- * Wraps upload.fields() and catches multer errors cleanly.
- */
 const handlePostUpload = (req, res, next) => {
     upload.fields([
         { name: 'image', maxCount: 1 },

@@ -2,10 +2,17 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 
-// Ensure uploads directory exists
-const uploadDir = 'uploads/';
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
+// Ensure uploads directory exists (only in local development)
+const isProduction = process.env.NODE_ENV === 'production' || process.env.NETLIFY;
+if (!isProduction) {
+    const uploadDir = 'uploads/';
+    try {
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+    } catch (err) {
+        console.warn(`Could not create directory ${uploadDir}:`, err.message);
+    }
 }
 
 // Disk storage — saves file with original extension so Cloudinary can detect type
@@ -43,16 +50,11 @@ const profileUpload = multer({
 const handleProfileUpload = (req, res, next) => {
     profileUpload.single('image')(req, res, (err) => {
         if (err instanceof multer.MulterError) {
-            // e.g. LIMIT_FILE_SIZE
             return res.status(400).json({ message: `Upload error: ${err.message}` });
         } else if (err) {
-            // fileFilter rejection or other error
             return res.status(400).json({ message: err.message });
         }
-
-        // Debug log — shows what multer received
         console.log('[multer] req.file:', req.file || 'NO FILE RECEIVED');
-
         next();
     });
 };

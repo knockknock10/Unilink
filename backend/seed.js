@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import bcrypt from 'bcryptjs';
 import User from './models/User.js';
 import Post from './models/Post.js';
 import Profile from './models/Profile.js';
@@ -9,6 +8,7 @@ import connectDB from './config/db.js';
 dotenv.config();
 
 const usersData = [
+  { name: 'Admin User', email: 'admin@example.com', password: 'admin123', role: 'admin', department: 'Administration', profilePic: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Admin' },
   { name: 'Aarav Patel', email: 'aarav@example.com', password: 'password123', department: 'Computer Science', year: '3rd Year', profilePic: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Aarav' },
   { name: 'Vivaan Sharma', email: 'vivaan@example.com', password: 'password123', department: 'Electronics', year: '2nd Year', profilePic: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Vivaan' },
   { name: 'Aditya Singh', email: 'aditya@example.com', password: 'password123', department: 'Information Technology', year: '4th Year', profilePic: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Aditya' },
@@ -44,47 +44,23 @@ const postTexts = [
   "Just wrapped up an amazing seminar on #AI and #FutureTech."
 ];
 
-const commentsList = [
-  "So true! 😭",
-  "Congrats!! 🎉",
-  "Check your DM, I can help out.",
-  "Thanks for sharing!",
-  "I was wondering the same thing.",
-  "Count me in!",
-  "Great job, keep it up!",
-  "Same here, completely lost.",
-  "That looks awesome.",
-  "Does anyone know if attendance is mandatory?"
-];
+const commentsList = ["So true! 😭", "Congrats!! 🎉", "Check your DM, I can help out.", "Thanks for sharing!", "I was wondering the same thing.", "Count me in!", "Great job, keep it up!", "Same here, completely lost.", "That looks awesome.", "Does anyone know if attendance is mandatory?"];
 
 const seedData = async () => {
     try {
         await connectDB();
-        console.log('Connected to DB...');
-
         await Post.deleteMany();
         await Profile.deleteMany();
         await User.deleteMany();
-        console.log('Data cleared...');
 
-        // Create Users
         const savedUsers = [];
         for (const u of usersData) {
-            const salt = await bcrypt.genSalt(10);
-            const hashedPassword = await bcrypt.hash(u.password, salt);
-            
-            const newUser = new User({
-                ...u,
-                password: hashedPassword
-            });
+            const newUser = new User(u);
             await newUser.save();
             savedUsers.push(newUser);
         }
-        console.log('Users seeded...');
 
-        // Relationships: Add followers randomly
         for (const u of savedUsers) {
-            // Pick 3 random followers
             for (let i = 0; i < 3; i++) {
                 const randomUser = savedUsers[Math.floor(Math.random() * savedUsers.length)];
                 if (u._id.toString() !== randomUser._id.toString() && !u.followers.includes(randomUser._id)) {
@@ -95,44 +71,27 @@ const seedData = async () => {
             }
             await u.save();
         }
-        console.log('Followers seeded...');
 
-        // Create Posts
         for (let i = 0; i < postTexts.length; i++) {
             const author = savedUsers[i % savedUsers.length];
-
-            const numLikes = Math.floor(Math.random() * 8) + 2; // 2 to 9 likes
+            const numLikes = Math.floor(Math.random() * 8) + 2;
             const likedBy = [];
             for (let l = 0; l < numLikes; l++) {
                 const randomLiker = savedUsers[Math.floor(Math.random() * savedUsers.length)];
-                if (!likedBy.includes(randomLiker._id)) {
-                    likedBy.push(randomLiker._id);
-                }
+                if (!likedBy.includes(randomLiker._id)) likedBy.push(randomLiker._id);
             }
-
-            const numComments = Math.floor(Math.random() * 4) + 1; // 1 to 4 comments
-            const comments = [];
-            for (let c = 0; c < numComments; c++) {
-                comments.push({
-                    user: savedUsers[Math.floor(Math.random() * savedUsers.length)]._id,
-                    text: commentsList[Math.floor(Math.random() * commentsList.length)],
-                    createdAt: new Date(Date.now() - Math.floor(Math.random() * 1000000000))
-                });
-            }
-
             const post = new Post({
                 user: author._id,
                 text: postTexts[i],
                 likes: likedBy.length,
                 likedBy: likedBy,
-                comments: comments
+                comments: [{
+                    user: savedUsers[Math.floor(Math.random() * savedUsers.length)]._id,
+                    text: commentsList[Math.floor(Math.random() * commentsList.length)]
+                }]
             });
-
             await post.save();
         }
-
-        console.log('Posts seeded...');
-        console.log('All UniLink data seeded successfully!');
         return true;
     } catch (error) {
         console.error('Error seeding data:', error);

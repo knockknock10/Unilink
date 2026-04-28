@@ -35,21 +35,19 @@ const registerUser = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: "Name, email, and password are required" });
     }
 
+    const normalizedEmail = email.toLowerCase().trim();
+
     // Check existing user
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) {
         return res.status(400).json({ message: "User already exists" });
     }
 
-    // Hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    // Save user
+    // Save user - The pre-save hook in User model will handle hashing
     const user = new User({
         name,
-        email,
-        password: hashedPassword
+        email: normalizedEmail,
+        password
     });
     await user.save();
 
@@ -68,14 +66,16 @@ const loginUser = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: "Email and password are required" });
     }
 
+    const normalizedEmail = email.toLowerCase().trim();
+
     // Find user
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: normalizedEmail });
     if (!user) {
         return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    // Compare password
-    const isMatch = await bcrypt.compare(password, user.password);
+    // Compare password using the model method
+    const isMatch = await user.matchPassword(password);
     if (!isMatch) {
         return res.status(400).json({ message: "Invalid credentials" });
     }
