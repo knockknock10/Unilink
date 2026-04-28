@@ -80,7 +80,7 @@ const Dashboard = () => {
     <div className="w-full">
       <div className="flex flex-col lg:flex-row gap-12 xl:gap-20 items-start">
 
-        {/* ═══════════════ CENTER — Feed ═══════════════ */}
+
         <div className="flex-1 min-w-0 max-w-[850px] mx-auto w-full">
           <div className="flex justify-between items-center mb-8">
             <MotionDiv
@@ -134,10 +134,10 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* ═══════════════ RIGHT — Sidebar ═══════════════ */}
+
         <div className="hidden lg:block w-[340px] xl:w-[380px] shrink-0 sticky top-28 space-y-6 max-h-[calc(100vh-8rem)] overflow-y-auto custom-scrollbar pb-4 pr-1">
 
-          {/* CARD 1 — Trending Tags */}
+
           <div className="glass-card p-6 xl:p-8 rounded-[32px] shadow-xl border border-primary/5 bg-white/50 backdrop-blur-sm">
             <h3 className="font-black text-primary flex items-center gap-2 mb-5 text-sm tracking-tight">
               <TrendingUp size={18} />
@@ -156,7 +156,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* CARD 2 — Discover Peers */}
+
           <div className="glass-card p-6 xl:p-8 rounded-[32px] shadow-xl border border-primary/5 bg-white/50 backdrop-blur-sm">
             <h3 className="font-black text-primary flex items-center gap-2 mb-5 text-sm tracking-tight">
               <Users size={18} />
@@ -203,7 +203,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* CARD 2 — Communities (SEPARATE card below) */}
+
           <div className="glass-card p-6 xl:p-8 rounded-[32px] shadow-xl border border-primary/5 bg-white/50 backdrop-blur-sm">
             <h3 className="font-black text-primary flex items-center gap-2 mb-5 text-sm tracking-tight">
               🏘️ Communities
