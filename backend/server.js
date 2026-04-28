@@ -1,10 +1,17 @@
-import express from 'express';
 import dotenv from 'dotenv';
+dotenv.config(); // Must be first — before any other imports that read process.env
+
+import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import http from 'http';
 import { Server } from 'socket.io';
+import mongoose from 'mongoose';
+
 import connectDB from './config/db.js';
+import Message from './models/Message.js';
+
+// Route Imports
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import postRoutes from './routes/postRoutes.js';
@@ -12,33 +19,29 @@ import eventRoutes from './routes/eventRoutes.js';
 import groupRoutes from './routes/groupRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
-import { notFound, errorHandler } from './middleware/errorMiddleware.js';
-import Message from './models/Message.js';
 import seedData from './seed.js';
+
+// Middleware Imports
+import { notFound, errorHandler } from './middleware/errorMiddleware.js';
+
 import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from 'fs';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-dotenv.config();
-
-// Connect to Database
+// Connect to MongoDB Atlas
 connectDB();
 
 const app = express();
-
-const users = {}; // To store userId and socketId mapping
-
 const server = http.createServer(app);
+
 const io = new Server(server, {
   cors: {
-    origin: process.env.NODE_ENV === 'production' 
-      ? ['https://hilarious-smakager-86a601.netlify.app'] 
-      : "http://localhost:5173",
-    methods: ["GET", "POST"]
-  }
+    origin: '*',
+    methods: ['GET', 'POST'],
+  },
 });
+
+// Socket.io Logic 
+const users = {}; // userId -> socketId
 
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
@@ -80,6 +83,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 // Serve Static Files (local uploads for dev)
+const __dirname = path.resolve();
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 // Logging (dev only)
@@ -107,7 +111,17 @@ mainRouter.get('/seed', async (req, res) => {
 });
 
 mainRouter.get('/', (req, res) => {
-  res.json({ status: 'ok', message: 'UniLink API is running...' });
+  res.json({ 
+    status: 'ok', 
+    message: 'UniLink API is running...',
+    db: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+    environment: {
+      hasMongo: !!process.env.MONGO_URI,
+      hasJwt: !!process.env.JWT_SECRET,
+      nodeEnv: process.env.NODE_ENV,
+      isNetlify: !!process.env.NETLIFY
+    }
+  });
 });
 
 // Mount the router at both /api (for local) and / (for Netlify/production)
@@ -122,9 +136,9 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5001;
 
 // Only start the server if not running in a serverless environment
-if (process.env.NODE_ENV !== 'production' && !process.env.NETLIFY) {
+if (process.env.NODE_ENV !== 'production' || process.env.RUN_LOCAL) {
   server.listen(PORT, () => {
-    console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+    console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
   });
 }
 
