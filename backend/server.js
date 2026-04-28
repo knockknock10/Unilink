@@ -39,7 +39,7 @@ const io = new Server(server, {
   },
 });
 
-// ─── Socket.io Logic ────────────────────────────────────────────────────────
+// Socket.io Logic 
 const users = {}; // userId -> socketId
 
 io.on('connection', (socket) => {
@@ -76,7 +76,7 @@ io.on('connection', (socket) => {
   });
 });
 
-// ─── Core Middleware ─────────────────────────────────────────────────────────
+// Core Middleware 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
@@ -90,7 +90,7 @@ if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'));
 }
 
-// ─── API Routes ──────────────────────────────────────────────────────────────
+//  API Routes 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
@@ -113,16 +113,18 @@ app.get('/', (req, res) => {
   res.json({ status: 'ok', message: 'UniLink API is running...' });
 });
 
-// ─── Error Handlers ───────────────────────────────────────────────────────────
+//Error Handlers 
 app.use(notFound);
 app.use(errorHandler);
 
-// ─── Start Server ─────────────────────────────────────────────────────────────
+
 const PORT = process.env.PORT || 5001;
 
-server.listen(PORT, () => {
-  console.log(`🚀 Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production' || process.env.RUN_LOCAL) {
+  server.listen(PORT, () => {
+    console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+  });
+}
 
 export { app, server, io };
 export default app;
