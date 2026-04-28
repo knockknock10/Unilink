@@ -1,9 +1,16 @@
 import axios from 'axios';
 
+const getBaseURL = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  // If we are in production and the env URL is missing or pointing to localhost, use relative path
+  if (import.meta.env.PROD && (!envUrl || envUrl.includes('localhost'))) {
+    return '/api';
+  }
+  return (envUrl || '') + '/api';
+};
+
 const api = axios.create({
-  baseURL: (import.meta.env.VITE_API_URL || '') + '/api', // Dynamic base URL
-  // Note: Do NOT set a default Content-Type here.
-  // axios auto-detects FormData and sets 'multipart/form-data' with the correct boundary.
+  baseURL: getBaseURL(),
 });
 
 // Interceptor to add authorization token
